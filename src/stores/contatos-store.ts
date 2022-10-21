@@ -1,4 +1,4 @@
-import { Contato } from '../components/models';
+import { Contato } from '../models';
 import { defineStore } from 'pinia';
 
 export type RootState = {
