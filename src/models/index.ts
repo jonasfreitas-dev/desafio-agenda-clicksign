@@ -1,7 +1,7 @@
-export interface Contato {
+export interface IContact {
   id?: number;
-  nome: string;
-  telefone: string;
+  name: string;
+  phoneNumber: string;
   email: string;
   highlight?: boolean;
 }

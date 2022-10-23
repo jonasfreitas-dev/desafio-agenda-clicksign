@@ -1,19 +1,28 @@
-import { Contato } from '../models';
+import { IContact } from '../models';
 import { defineStore } from 'pinia';
 
 export type RootState = {
-  items: Contato[];
+  items: IContact[];
+  selectedContactId: number;
+  editItem: IContact;
+  showEditDialog: boolean;
+  showDeleteDialog: boolean;
   searchQuery: string;
 };
 
-export const useContatosStore = defineStore('contatos', {
+export const useContactsStore = defineStore('contacts', {
   state: () =>
     ({
       items: [],
+      selectedContactId: -1,
+      editItem: { id: -1, name: '', email: '', phoneNumber: '' },
+      showEditDialog: false,
+      showDeleteDialog: false,
       searchQuery: '',
     } as RootState),
   getters: {
     total: (state) => state.items.length,
+    isEmpty: (state) => state.items.length === 0,
     searchResults: (state) => {
       return state.searchQuery.length > 0
         ? state.items.filter((item) => {
@@ -22,25 +31,25 @@ export const useContatosStore = defineStore('contatos', {
               .split(' ')
               .every(
                 (v) =>
-                  item.nome?.toLowerCase().includes(v) ||
+                  item.name?.toLowerCase().includes(v) ||
                   item.email?.toLowerCase().includes(v) ||
-                  item.telefone?.toLowerCase().includes(v)
+                  item.phoneNumber?.toLowerCase().includes(v)
               );
           })
         : state.items;
     },
   },
   actions: {
-    create(contato: Contato, highlight = false) {
+    create(contato: IContact, highlight = false) {
       const highlightSeconds = 10;
       contato.id = this.items.length + 1;
       this.items.push(contato);
       if (highlight) this.setHighlight(contato.id, highlightSeconds);
     },
-    update(contato: Contato) {
-      const index = this.findIndexById(contato.id as number);
+    update(contact: IContact) {
+      const index = this.findIndexById(contact.id as number);
       if (index < 0) return;
-      this.items[index] = contato;
+      this.items[index] = contact;
     },
     delete(id: number) {
       const index = this.findIndexById(id);

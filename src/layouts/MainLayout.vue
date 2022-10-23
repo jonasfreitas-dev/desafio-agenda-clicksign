@@ -12,14 +12,15 @@
             icon="add"
             rounded
             no-caps
-            class="bg-primary text-secondary criar_contato_bt shadown-0"
+            class="bg-secondary text-primary criar_contato_bt shadown-0"
             label="Criar contato"
+            @click="createNewContact"
           />
         </div>
         <div class="col-12 col-sm-12 col-md-grow flex items-center col-grow">
           <q-input
             standout="bg-blue-grey-5 text-white"
-            v-model="contatosStore.searchQuery"
+            v-model="contactsStore.searchQuery"
             label="Buscar..."
             dense
             class="text-black full-width"
@@ -37,8 +38,13 @@
 </template>
 
 <script setup lang="ts">
-import { useContatosStore } from "stores/contatos-store";
-const contatosStore = useContatosStore();
+import { useContactsStore } from "src/stores/contact-store";
+const contactsStore = useContactsStore();
+
+const createNewContact = function () {
+  contactsStore.selectedContactId = -1;
+  contactsStore.showEditDialog = true;
+};
 </script>
 
 <style>

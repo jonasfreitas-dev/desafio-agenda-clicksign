@@ -5,7 +5,7 @@
         <q-table
           class="q-mt-md shadown-0"
           :columns="columns"
-          :rows="contatosStore.searchResults"
+          :rows="contactsStore.searchResults"
           color="grey"
           table-header-class="text-grey"
           table-class="text-black"
@@ -15,24 +15,42 @@
         >
           <template v-slot:body="props">
             <q-tr :props="props" :class="props.row.highlight ? 'row_highlight' : ''">
-              <q-td key="avatar" :props="props" style="width: 10px"></q-td>
+              <q-td key="avatar" :props="props" style="width: 10px">
                 <q-avatar dense :color="getRandomColor()" size="sm" text-color="white">{{
-                  props.row.nome[0]
+                  props.row.name[0]
                 }}</q-avatar>
               </q-td>
-              <q-td key="nome" :props="props">
-                {{ props.row.nome }}
+              <q-td key="name" :props="props">
+                {{ props.row.name }}
               </q-td>
               <q-td key="email" :props="props">
                 {{ props.row.email }}
               </q-td>
-              <q-td key="telefone" :props="props">
-                {{ props.row.telefone }}
+              <q-td key="phoneNumber" :props="props">
+                {{ props.row.phoneNumber }}
+              </q-td>
+              <q-td key="actions" :props="props">
+                <q-btn
+                  flat
+                  icon="edit"
+                  color="grey"
+                  @click="selectContact(props.row.id)"
+                ></q-btn>
+                <q-btn
+                  flat
+                  icon="delete"
+                  color="grey"
+                  @click="
+                    contactsStore.showDeleteDialog = !contactsStore.showDeleteDialog
+                  "
+                ></q-btn>
               </q-td>
             </q-tr>
           </template>
         </q-table>
       </div>
+      <edit-dialog />
+      <delete-dialog />
     </div>
   </q-page>
 </template>
@@ -42,57 +60,51 @@
 }
 </style>
 <script setup lang="ts">
-import { useContatosStore } from 'stores/contatos-store';
+import { useContactsStore } from "src/stores/contact-store";
+import DeleteDialog from "src/components/DeleteDialog.vue";
+import EditDialog from "src/components/EditDialog.vue";
 
-const contatosStore = useContatosStore();
+const contactsStore = useContactsStore();
 
 const columns = [
   {
-    name: 'avatar',
-    label: '',
-    align: 'center',
+    name: "avatar",
+    label: "",
+    align: "center",
   },
   {
-    name: 'nome',
-    label: 'Contatos',
-    field: 'nome',
-    align: 'left',
+    name: "name",
+    label: "Contatos",
+    field: "name",
+    align: "left",
   },
   {
-    name: 'email',
-    label: 'E-mail',
-    field: 'email',
-    align: 'left',
+    name: "email",
+    label: "E-mail",
+    field: "email",
+    align: "left",
   },
   {
-    name: 'telefone',
-    label: 'Telefone',
-    field: 'telefone',
-    align: 'left',
+    name: "phoneNumber",
+    label: "Telefone",
+    field: "phoneNumber",
+    align: "left",
+  },
+  {
+    name: "actions",
+    label: "",
+    align: "right",
   },
 ];
 
-contatosStore.create({
-  nome: 'Jonas Freitas',
-  telefone: '24992959359',
-  email: 'admin@jonasfreias.dev',
-});
-
-contatosStore.create({
-  nome: 'Carolina Furtado',
-  telefone: '24993273658',
-  email: 'calu.furtado@gmail.com',
-});
-
-contatosStore.create({
-  nome: 'Jairo Freitas',
-  telefone: '22997493821',
-  email: 'jairocostfreitas@gmail.com',
-});
-
 const getRandomColor = function () {
-  const colors = ['red', 'green', 'blue', 'blue-grey', 'yellow-10'];
+  const colors = ["red", "green", "blue", "blue-grey", "yellow-10"];
   const rnd = Math.floor(Math.random() * colors.length);
   return colors[rnd];
+};
+
+const selectContact = function (id: number) {
+  contactsStore.selectedContactId = id;
+  contactsStore.showEditDialog = true;
 };
 </script>
