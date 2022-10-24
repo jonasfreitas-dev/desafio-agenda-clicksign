@@ -1,9 +1,16 @@
 <script setup>
+import { useQuasar } from "quasar";
 import { useContactsStore } from "src/stores/contact-store";
+
+const $q = useQuasar();
 const contactsStore = useContactsStore();
+const removeContact = function () {
+  contactsStore.delete(contactsStore.selectedContactId);
+  $q.notify("Contato removido com sucesso!");
+};
 </script>
 <template>
-  <q-dialog v-model="contactsStore.showDeleteDialog">
+  <q-dialog v-model="contactsStore.deleteDialog">
     <q-card class="bg_modal">
       <q-card-section class="q-pa-sm">
         <div class="text-h6">Excluir Contato</div>
@@ -22,7 +29,14 @@ const contactsStore = useContactsStore();
           class="cancelar_bt"
           v-close-popup
         />
-        <q-btn flat label="Excluir" no-caps class="excluir_bt" v-close-popup />
+        <q-btn
+          flat
+          label="Excluir"
+          no-caps
+          class="excluir_bt"
+          v-close-popup
+          @click="removeContact"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>

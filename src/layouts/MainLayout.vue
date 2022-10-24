@@ -7,6 +7,7 @@
         </div>
         <div class="col-auto flex justify-end items-center">
           <q-btn
+            v-if="!contactsStore.isEmpty"
             size="md"
             dense
             icon="add"
@@ -14,7 +15,7 @@
             no-caps
             class="bg-secondary text-primary criar_contato_bt shadown-0"
             label="Criar contato"
-            @click="createNewContact"
+            @click="contactsStore.showEditDialog()"
           />
         </div>
         <div class="col-12 col-sm-12 col-md-grow flex items-center col-grow">
@@ -40,11 +41,6 @@
 <script setup lang="ts">
 import { useContactsStore } from "src/stores/contact-store";
 const contactsStore = useContactsStore();
-
-const createNewContact = function () {
-  contactsStore.selectedContactId = -1;
-  contactsStore.showEditDialog = true;
-};
 </script>
 
 <style>

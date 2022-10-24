@@ -3,6 +3,7 @@
     <div class="row q-mt-md">
       <div class="col-12">
         <q-table
+          v-if="!contactsStore.isEmpty"
           class="q-mt-md shadown-0"
           :columns="columns"
           :rows="contactsStore.searchResults"
@@ -32,22 +33,42 @@
               <q-td key="actions" :props="props">
                 <q-btn
                   flat
-                  icon="edit"
                   color="grey"
-                  @click="selectContact(props.row.id)"
-                ></q-btn>
+                  @click="contactsStore.showEditDialog(props.row.id)"
+                >
+                  <img src="~/assets/ic-edit.svg" />
+                </q-btn>
                 <q-btn
                   flat
-                  icon="delete"
                   color="grey"
-                  @click="
-                    contactsStore.showDeleteDialog = !contactsStore.showDeleteDialog
-                  "
-                ></q-btn>
+                  @click="contactsStore.showDeleteDialog(props.row.id)"
+                >
+                  <img src="~/assets/ic-delete.svg" />
+                </q-btn>
               </q-td>
             </q-tr>
           </template>
         </q-table>
+        <div class="row q-mt-xl flex justify-center" v-if="contactsStore.isEmpty">
+          <div class="col-12 flex justify-center q-ma-md">
+            <img src="~/assets/ic-book.svg" />
+          </div>
+          <div class="col-12 flex justify-center items-center q-pa-lg">
+            <div class="">Nenhum contato foi criado ainda</div>
+          </div>
+          <div class="col-12 flex justify-center q-ma-sm">
+            <q-btn
+              size="md"
+              dense
+              icon="add"
+              rounded
+              no-caps
+              class="bg-secondary text-primary criar_contato_bt shadown-0"
+              label="Criar contato"
+              @click="contactsStore.showEditDialog()"
+            />
+          </div>
+        </div>
       </div>
       <edit-dialog />
       <delete-dialog />
@@ -101,10 +122,5 @@ const getRandomColor = function () {
   const colors = ["red", "green", "blue", "blue-grey", "yellow-10"];
   const rnd = Math.floor(Math.random() * colors.length);
   return colors[rnd];
-};
-
-const selectContact = function (id: number) {
-  contactsStore.selectedContactId = id;
-  contactsStore.showEditDialog = true;
 };
 </script>

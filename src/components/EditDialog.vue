@@ -1,18 +1,23 @@
 <script setup lang="ts">
+import { useQuasar } from "quasar";
 import { useContactsStore } from "src/stores/contact-store";
+const $q = useQuasar();
+
 const contatcsStore = useContactsStore();
 
 const saveContact = function () {
   if (contatcsStore.selectedContactId < 0) {
     contatcsStore.create(contatcsStore.editItem, true);
+    $q.notify("Contato criado com sucesso!");
   } else if (contatcsStore.selectedContactId > -1) {
     contatcsStore.update(contatcsStore.editItem);
+    $q.notify("Contato atualizado com sucesso!");
   }
-  contatcsStore.showEditDialog = false;
+  contatcsStore.editDialog = false;
 };
 </script>
 <template>
-  <q-dialog v-model="contatcsStore.showEditDialog">
+  <q-dialog v-model="contatcsStore.editDialog">
     <q-card class="bg_modal" bordered>
       <q-card-section class="q-pa-sm">
         <div class="text-h6">Editar Contato</div>
@@ -37,19 +42,22 @@ const saveContact = function () {
               outlined
               label=""
               dense
+              type="email"
               class="text-black full-width"
               v-model="contatcsStore.editItem.email"
             >
             </q-input>
           </div>
-          <div class="col-12">
+          <div class="col-5">
             <div>Telefone</div>
             <q-input
               outlined
               label=""
+              type="tel"
               dense
               class="text-black full-width"
               v-model="contatcsStore.editItem.phoneNumber"
+              mask="(##)#####-####"
             >
             </q-input>
           </div>
@@ -65,7 +73,14 @@ const saveContact = function () {
           class="cancelar_bt"
           v-close-popup
         />
-        <q-btn flat label="Salvar" no-caps class="salvar_bt" @click="saveContact" />
+        <q-btn
+          flat
+          label="Salvar"
+          no-caps
+          class="salvar_bt"
+          :disable="!contatcsStore.canSave"
+          @click="saveContact"
+        />
       </q-card-actions>
     </q-card>
   </q-dialog>
